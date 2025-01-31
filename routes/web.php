@@ -14,4 +14,8 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::get('/tasks', [\App\Http\Controllers\TaskModelController::class, 'index'])->name('tasks.index');
+    Route::get('/tags', [\App\Http\Controllers\TagsModelController::class, 'index'])->name('tags.index');
+
 });

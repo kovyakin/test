@@ -1,15 +1,31 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+    <div class="">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <x-welcome />
-            </div>
-        </div>
+                <a
+                        @class([
+                            'nav-link',
+                            'active'=>isset($active_tasks)  ?? true
+                                ])
+                        aria-current="page"
+                        href="{{route('tasks.index')}}">
+                    {{__("Task")}}
+                </a>
+
+            </li>
+            <li class="nav-item">
+                <a
+                        @class([
+                  'nav-link',
+                  'active'=>isset($active_tags) ?? true
+                      ])
+
+                   href="{{route('tags.index')}}">{{__("Tags")}}</a>
+            </li>
+
+        </ul>
     </div>
+    @yield('content')
+
 </x-app-layout>
