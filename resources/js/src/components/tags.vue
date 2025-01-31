@@ -64,6 +64,7 @@
     <div class="flex items-center gap-4 mb-4">
       <label for="todotag" class="font-semibold w-24">Tag</label>
       <InputText id="todotag" v-model="new_tag"
+                 :invalid="new_tag?.length < 3"
                  class="!w-full"
                  :class = "class_validate_new_tag"
                  @value-change="add_tags()"
@@ -74,7 +75,7 @@
     </div>
 
     <div class="flex justify-end gap-2">
-      <Button type="button" label="Cancel" severity="secondary" @click="visible_dialog_add = false"></Button>
+      <Button type="button" label="Cancel" severity="secondary" @click="reset"></Button>
       <Button type="button" label="Save" @click="send_new_tag"
               :disabled = "!(class_validate_new_tag === '' &&  new_tag !== '') "
       ></Button>
@@ -215,7 +216,10 @@ const confirm_delete = (t) => {
     }
   });
 };
-
+const reset = ()=>{
+  visible_dialog_add.value = false;
+  new_tag.value = '';
+}
 
 </script>
 

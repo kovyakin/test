@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiControllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TasksResource;
+use App\Models\TagsModel;
 use App\Models\TaskModel;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -34,17 +35,36 @@ class ApiTasksController extends Controller
      */
     public function store(Request $request)
     {
+        $user_id = auth()->user()->id;
+
         $validator = Validator::make($request->all(), [
-            'value' => 'required|min:3|max:20',
+            'value'=>'required|array',
+            'value.0' => 'required|min:3|max:20',
+            'value.1' => 'required|min:3|max:200',
+            'value.3' => 'array',
         ]);
+
+        $title = $request->value[0];
+        $text = $request->value[1];
+        $selectAll = $request->value[2];
+        $selectItem = $request->value[3];
+
+        if($selectAll){
+            $selectItem = TagsModel::query()
+                ->where('user_id', $user_id)
+                ->pluck('id');
+        }
 
         if ($validator->fails()) {
             return ['result' => 'error', 'message' => $validator->errors()];
         }
 
+
         TaskModel::query()->create([
-            'user_id' => auth()->user()->id,
-            'title'=>$request->value
+            'user_id' => $user_id,
+            'title'=>$title,
+            'text'=>$text,
+            'tags_id'=>count($selectItem) > 0 ? $selectItem->toJson(): null,
         ]);
 
         return ['result' => 'success'];

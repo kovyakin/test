@@ -1,7 +1,11 @@
 <template>
   <div class="container text-center">
     <div class="row mt-2">
-      <Button label="Добавить" severity="secondary" variant="text" raised size="small"
+      <Button label="Добавить"
+              severity="secondary"
+              variant="text"
+              raised
+              size="small"
               @click="visible_dialog_add = true"
       />
     </div>
@@ -22,6 +26,7 @@
                      :value=" task.title "
                      type="text"
                      size="small"/>
+
         </template>
 
         <template #footer>
@@ -56,33 +61,86 @@
 
     </div>
   </div>
-  <Toast  />
+  <Toast/>
   <ConfirmDialog></ConfirmDialog>
 
-  <Dialog v-model:visible="visible_dialog_add" modal header="Добавить новую запись" :style="{ width: '25rem' }">
-    <span class="text-surface-500 dark:text-surface-400 block mb-8">От 3 до 20 символов.</span>
-    <div class="flex items-center gap-4 mb-4">
-      <label for="todotask" class="font-semibold w-24">task</label>
-      <InputText id="todotask" v-model="new_task"
-                 class="!w-full"
-                 :class = "class_validate_new_task"
-                 @value-change="add_tasks()"
-                 type="text"
-                 size="small" autocomplete="off"
+  <Dialog v-model:visible="visible_dialog_add"
+          modal
+          header="Добавить новую запись"
+          :style="{ width: '25rem' }">
+    <div class="flex items-center">
+      <div class="gridgrid-rows-3">
+        <div>
+          <label for="todotask"
+                 class="font-semibold w-24">title</label>
+          <InputText id="todotask"
+                     v-model="new_task"
+                     :invalid="new_task?.length <3"
+                     class="!w-full"
+                     :class="class_validate_new_task"
+                     @value-change="add_tasks()"
+                     type="text"
+                     placeholder="От 3 до 20 символов."
+                     size="small"
+                     autocomplete="off"
 
-      />
+          />
+        </div>
+        <div>
+          <label for="text"
+                 class="font-semibold w-24">text</label>
+          <Textarea id="text"
+                    v-model="text_value"
+                    :invalid="text_value?.length <3"
+                    :class="class_validate_new_text"
+                    @value-change ="add_text()"
+                    variant="filled"
+                    placeholder="От 3 до 200 символов."
+                    style="resize: none"
+                    size="small"
+                    rows="10"
+                    cols="50"/>
+        </div>
+
+        <div class=" mb-2">
+          <label for="tags"
+                 class="font-semibold w-24">tags</label>
+
+          <MultiSelect v-model="selectedItems"
+                       :options="items"
+                       :maxSelectedLabels="3"
+                       :selectAll="selectAll"
+                       optionLabel="title"
+                       optionValue="id"
+                       @selectall-change="onSelectAllChange($event)"
+                       @change="onChange($event)"
+                       :virtualScrollerOptions="{ itemSize: 30 }"
+                       filter
+                       placeholder="Выберите tags"
+                       size="small"
+                       class="w-full"/>
+
+        </div>
+      </div>
+
     </div>
 
     <div class="flex justify-end gap-2">
-      <Button type="button" label="Cancel" severity="secondary" @click="visible_dialog_add = false"></Button>
-      <Button type="button" label="Save" @click="send_new_task"
-              :disabled = "!(class_validate_new_task === '' &&  new_task !== '') "
+      <Button type="button"
+              label="Отмена"
+              severity="secondary"
+              @click="reset "></Button>
+      <Button type="button"
+              label="Сохранить"
+              @click="send_new_task"
+              :disabled="!(class_validate_new_task === '' &&  new_task !== '') "
       ></Button>
     </div>
   </Dialog>
+
 </template>
 
-<script  setup>
+<script setup>
 import {get} from "../../fetch";
 import {onMounted, ref} from "vue";
 import Card from 'primevue/card';
@@ -90,9 +148,11 @@ import InputText from 'primevue/inputtext';
 import Toast from 'primevue/toast';
 import {useToast} from "primevue";
 import ConfirmDialog from 'primevue/confirmdialog';
-import { useConfirm } from "primevue/useconfirm";
+import {useConfirm} from "primevue/useconfirm";
 import {Button} from "primevue";
 import Dialog from 'primevue/dialog';
+import {Textarea} from "primevue";
+import MultiSelect from 'primevue/multiselect';
 
 const toast = useToast();
 const confirm = useConfirm();
@@ -103,20 +163,33 @@ const props = defineProps({
 
 const tasks = ref([]);
 const title = ref(null);
+const text_value = ref(null);
 const visible_dialog_add = ref(false);
 const new_task = ref('');
 const class_validate_new_task = ref('');
+const class_validate_new_text = ref('');
 
+
+const selectedItems = ref([]);
+const selectAll = ref(false);
+const items = ref([]);
 
 onMounted(() => {
   load_tasks();
-
+  load_tags();
 })
 
 const load_tasks = () => {
 
   get('/api/tasks', props.token, 'GET').then((response) => response.json()).then((result) => {
     tasks.value = result.data;
+
+  });
+}
+
+const load_tags = () => {
+  get('/api/tags', props.token, 'GET').then((response) => response.json()).then((result) => {
+    items.value = result.data;
 
   });
 }
@@ -142,10 +215,9 @@ const send_tasks = (t) => {
 
     get('/api/tasks/' + t.id, props.token, 'PUT', t.title).then((response) => response.json()).then((result) => {
       if (result.result === 'success') {
-        toast.add({ severity: 'success', summary: 'Успешно', detail: 'Изменения сохранены', life: 2000 });
-      }
-      else if(result.result === 'error'){
-        toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Ошибка сохранения', life: 2000 });
+        toast.add({severity: 'success', summary: 'Успешно', detail: 'Изменения сохранены', life: 2000});
+      } else if (result.result === 'error') {
+        toast.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка сохранения', life: 2000});
       }
 
     });
@@ -154,18 +226,22 @@ const send_tasks = (t) => {
 }
 const send_new_task = () => {
 
-  if (class_validate_new_task.value === '' && new_task.value.length > 0) {
-
-    get('/api/tasks', props.token, 'POST', new_task.value).then((response) => response.json()).then((result) => {
+  if (class_validate_new_task.value === '' &&
+      new_task.value.length > 0 &&
+      class_validate_new_text.value === '' &&
+      text_value.value.length > 0
+  ) {
+console.log(selectedItems.value)
+    get('/api/tasks', props.token, 'POST',[ new_task.value, text_value.value, selectAll.value, selectedItems.value]).then((response) =>
+        response.json()).then((result) => {
 
       if (result.result === 'success') {
         visible_dialog_add.value = false;
-        new_task.value ='';
+        new_task.value = '';
         load_tasks();
-        toast.add({ severity: 'success', summary: 'Успешно', detail: 'Запись создана', life: 2000 });
-      }
-      else if(result.result === 'error'){
-        toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Ошибка создания записи', life: 2000 });
+        toast.add({severity: 'success', summary: 'Успешно', detail: 'Запись создана', life: 2000});
+      } else if (result.result === 'error') {
+        toast.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка создания записи', life: 2000});
       }
     });
   }
@@ -173,14 +249,20 @@ const send_new_task = () => {
 
 
 const add_tasks = () => {
-  if(new_task.value.length >3 && new_task.value.length<21){
+  if (new_task.value.length > 3 && new_task.value.length < 21) {
     class_validate_new_task.value = '';
-  }
-  else{
+  } else {
     class_validate_new_task.value = '!text-red-500';
   }
 }
 
+const add_text = () => {
+  if (text_value.value.length > 3 && text_value.value.length < 201) {
+    class_validate_new_text.value = '';
+  } else {
+    class_validate_new_text.value = '!text-red-500';
+  }
+}
 
 const confirm_delete = (t) => {
   confirm.require({
@@ -201,10 +283,9 @@ const confirm_delete = (t) => {
       get('/api/tasks/' + t.id, props.token, 'DELETE', t.title).then((response) => response.json()).then((result) => {
         if (result.result === 'success') {
           load_tasks();
-          toast.add({ severity: 'success', summary: 'Успешно', detail: 'Удалено', life: 2000 });
-        }
-        else if(result.result === 'error'){
-          toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Ошибка удаления', life: 2000 });
+          toast.add({severity: 'success', summary: 'Успешно', detail: 'Удалено', life: 2000});
+        } else if (result.result === 'error') {
+          toast.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка удаления', life: 2000});
         }
 
       });
@@ -212,11 +293,25 @@ const confirm_delete = (t) => {
       // toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 2000 });
     },
     reject: () => {
-      toast.add({ severity: 'error', summary: 'Отмена', detail: 'Удаление отменено', life: 2000 });
+      toast.add({severity: 'error', summary: 'Отмена', detail: 'Удаление отменено', life: 2000});
     }
   });
 };
 
+const onSelectAllChange = (event) => {
+  selectedItems.value = event.checked ? items.value.map((item) => item.value) : [];
+  selectAll.value = event.checked;
+};
+const onChange = (event) => {
+  selectAll.value = event.value.length === items.value.length;
+}
+
+const reset = ()=>{
+  visible_dialog_add.value = false;
+  new_task.value = '';
+  text_value.value = '';
+  selectedItems.value = null;
+}
 
 </script>
 
