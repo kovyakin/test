@@ -1,20 +1,37 @@
 <template>
-<div  class="grid grid-cols-4 gap-4">
-  <div v-for="tag in tags" class=" mx-2 my-2">
-    <Card style="width: 20rem; overflow: hidden">
-      <template #header>
+  <div class="grid grid-cols-4 gap-1 mt-2 ml-2">
+    <div v-for="tag in tags"
+         class="">
+      <Card style="width: 20rem; overflow: hidden">
+        <template #content>
 
-      </template>
-      <template #subtitle>{{tag.title}}</template>
-      <template #footer>
-        <div class="flex gap-4 mt-1 text-sm">
-          created: {{tag.created_at}}
-        </div>
-      </template>
-    </Card>
+          <div class="grid grid-cols-12 ">
+            <div >
+              <InputText v-model="title"  :value=" tag.title " type="text"
+                         size="small"  />
+            </div>
+            <div class="col-start-11 flex justify-content-end" >
+              <i class="pi pi-pencil"
+                 style="color: orange; font-size: 1rem"></i>
+            </div>
+
+            <div  class="col-start-12 flex justify-content-end">
+              <i class="pi pi-times"
+                 style="color: red;font-size: 1rem"></i>
+            </div>
+          </div>
+        </template>
+
+        <template #footer>
+
+          <div class="flex gap-4 mt-1 text-sm">
+            created: {{ tag.created_at }}
+          </div>
+        </template>
+      </Card>
+
+    </div>
   </div>
-</div>
-
 
 
 </template>
@@ -23,23 +40,24 @@
 import {get} from "../../fetch";
 import {onMounted, ref} from "vue";
 import Card from 'primevue/card';
-import {Button} from "primevue";
+import InputText from 'primevue/inputtext';
+import Divider from 'primevue/divider';
 
 const props = defineProps({
-  token:String
+  token: String
 })
 
 const tags = ref([]);
-
-onMounted(()=>{
+const title = ref(null)
+onMounted(() => {
   load_tags();
 })
 
-const load_tags = ()=>{
-get('/api/tags', props.token,'GET' ).then((response) => response.json()).then((result)=>{
-  tags.value = result.data;
-  console.log(result);
-});
+const load_tags = () => {
+  get('/api/tags', props.token, 'GET').then((response) => response.json()).then((result) => {
+    tags.value = result.data;
+    console.log(result);
+  });
 }
 </script>
 

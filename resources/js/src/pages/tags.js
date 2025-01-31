@@ -15,10 +15,7 @@ tags.use(PrimeVue, {
         options: {
             prefix: 'p',
             darkModeSelector: '.my-app-dark',
-            cssLayer: {
-                name: 'primevue',
-                order: 'tailwind-base, primevue, tailwind-utilities'
-            }
+            cssLayer: false
         }
     }
 });
