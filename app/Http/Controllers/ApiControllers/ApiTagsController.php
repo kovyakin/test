@@ -85,6 +85,14 @@ class ApiTagsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $isDel =  TagsModel::query()->where('id', $id)->delete();
+
+//        $isDel = TagsModel::query()->find($id)->first();
+
+        if($isDel){
+            return ['result' => 'success'];
+        }
+
+        return ['result' => 'error'];
     }
 }

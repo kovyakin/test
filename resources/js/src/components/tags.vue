@@ -38,7 +38,7 @@
 
             <div class="mx-1 my-1">
               <i class="pi pi-times"
-                 @click="confirm_delete"
+                 @click="confirm_delete(tag)"
                  style="color: red;font-size: 1rem"></i>
             </div>
           </div>
@@ -118,7 +118,7 @@ const send_tags = (t) => {
   // console.log(title)
 }
 
-const confirm_delete = () => {
+const confirm_delete = (t) => {
   confirm.require({
     message: 'Вы хотите удалить запись?',
     header: 'Подтверждение удаления',
@@ -134,9 +134,17 @@ const confirm_delete = () => {
     },
     accept: () => {
 
+      get('/api/tags/' + t.id, props.token, 'DELETE', t.title).then((response) => response.json()).then((result) => {
+        if (result.result === 'success') {
+          toast.add({ severity: 'success', summary: 'Успешно', detail: 'Удалено', life: 2000 });
+        }
+        else if(result.result === 'error'){
+          toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Ошибка удаления', life: 2000 });
+        }
 
+      });
 
-      toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 2000 });
+      // toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 2000 });
     },
     reject: () => {
       toast.add({ severity: 'error', summary: 'Отмена', detail: 'Удаление отменено', life: 2000 });
