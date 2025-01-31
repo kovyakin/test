@@ -9,7 +9,8 @@ Route::get('/user', function (Request $request) {
 });
 
 //Route::resource('/tasks', ApiTagsController::class);
-Route::apiResource('tasks', app\Http\Controllers\ApiControllers\ApiTagsController::class);
+Route::apiResource('tags', app\Http\Controllers\ApiControllers\ApiTagsController::class)
+    ->middleware('auth:sanctum');
 //Route::get('/tasks', function () {
 //    dd(1);
 //});

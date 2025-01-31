@@ -4,18 +4,27 @@ namespace app\Http\Controllers\ApiControllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TagsResource;
+use App\Models\TagsModel;
 use App\Models\TaskModel;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ApiTagsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-
-        return TagsResource::collection(TaskModel::class);
+        $user = User::query()->where('id',$request->user()->id)->first();
+//        $tokens = $user->tokens();
+//
+//        dd($request->bearerToken());
+//        dd($user);
+//        dd($request->user()->id);
+//        dd($request->bearerToken());
+        return TagsResource::collection(TagsModel::query()->where('user_id',$user->id)->get());
     }
 
     /**

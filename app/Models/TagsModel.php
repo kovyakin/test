@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\TagsScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class TagsModel extends Model
@@ -13,5 +15,13 @@ class TagsModel extends Model
         'user_id',
         'title',
     ];
-    //
+
+    protected $casts=[
+        'created_at'=>'datetime:d-m-Y H:i:s'
+    ];
+
+    protected static function booted(): void
+    {
+//        static::addGlobalScope(new TagsScope);
+    }
 }
