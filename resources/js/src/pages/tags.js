@@ -8,10 +8,14 @@ import Aura from '@primevue/themes/aura';
 
 import ToastService from 'primevue/toastservice';
 
+import ConfirmationService from 'primevue/confirmationservice';
+
 const tags = createApp({});
 
 tags.component('tags-form', Tags);
-tags.use(ToastService)
+tags.use(ToastService);
+tags.use(ConfirmationService);
+
 tags.use(PrimeVue, {
     theme: {
         preset: Aura,

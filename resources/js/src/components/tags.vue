@@ -38,6 +38,7 @@
 
             <div class="mx-1 my-1">
               <i class="pi pi-times"
+                 @click="confirm_delete"
                  style="color: red;font-size: 1rem"></i>
             </div>
           </div>
@@ -48,7 +49,7 @@
     </div>
   </div>
   <Toast  />
-
+  <ConfirmDialog></ConfirmDialog>
 </template>
 
 <script  setup>
@@ -58,9 +59,11 @@ import Card from 'primevue/card';
 import InputText from 'primevue/inputtext';
 import Toast from 'primevue/toast';
 import {useToast} from "primevue";
-// import {useToast} from 'primevue/usetoast';
+import ConfirmDialog from 'primevue/confirmdialog';
+import { useConfirm } from "primevue/useconfirm";
 
 const toast = useToast();
+const confirm = useConfirm();
 
 const props = defineProps({
   token: String
@@ -114,6 +117,34 @@ const send_tags = (t) => {
   }
   // console.log(title)
 }
+
+const confirm_delete = () => {
+  confirm.require({
+    message: 'Вы хотите удалить запись?',
+    header: 'Подтверждение удаления',
+    icon: 'pi pi-exclamation-triangle',
+    rejectProps: {
+      label: 'Отменить',
+      severity: 'secondary',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Удалить',
+      severity: 'danger',
+    },
+    accept: () => {
+
+
+
+      toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 2000 });
+    },
+    reject: () => {
+      toast.add({ severity: 'error', summary: 'Отмена', detail: 'Удаление отменено', life: 2000 });
+    }
+  });
+};
+
+
 </script>
 
 <style>
