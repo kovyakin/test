@@ -41,7 +41,20 @@ class ApiTagsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'value' => 'required|min:3|max:20',
+        ]);
+
+        if ($validator->fails()) {
+            return ['result' => 'error', 'message' => $validator->errors()];
+        }
+
+        TagsModel::query()->create([
+            'user_id' => auth()->user()->id,
+            'title'=>$request->value
+        ]);
+
+        return ['result' => 'success'];
     }
 
     /**

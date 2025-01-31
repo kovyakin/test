@@ -75,7 +75,7 @@
 
     <div class="flex justify-end gap-2">
       <Button type="button" label="Cancel" severity="secondary" @click="visible_dialog_add = false"></Button>
-      <Button type="button" label="Save" @click="visible_dialog_add = false"
+      <Button type="button" label="Save" @click="send_new_tag"
               :disabled = "!(class_validate_new_tag === '' &&  new_tag !== '') "
       ></Button>
     </div>
@@ -151,6 +151,25 @@ const send_tags = (t) => {
   }
   // console.log(title)
 }
+const send_new_tag = () => {
+
+  if (class_validate_new_tag.value === '' && new_tag.value.length > 0) {
+
+    get('/api/tags', props.token, 'POST', new_tag.value).then((response) => response.json()).then((result) => {
+
+      if (result.result === 'success') {
+        visible_dialog_add.value = false;
+        new_tag.value ='';
+        load_tags();
+        toast.add({ severity: 'success', summary: 'Успешно', detail: 'Запись создана', life: 2000 });
+      }
+      else if(result.result === 'error'){
+        toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Ошибка создания записи', life: 2000 });
+      }
+    });
+  }
+}
+
 
 const add_tags = () => {
   if(new_tag.value.length >3 && new_tag.value.length<21){
@@ -159,7 +178,6 @@ const add_tags = () => {
   else{
     class_validate_new_tag.value = '!text-red-500';
   }
-console.log(new_tag.value)
 }
 
 
@@ -181,6 +199,7 @@ const confirm_delete = (t) => {
 
       get('/api/tags/' + t.id, props.token, 'DELETE', t.title).then((response) => response.json()).then((result) => {
         if (result.result === 'success') {
+          load_tags();
           toast.add({ severity: 'success', summary: 'Успешно', detail: 'Удалено', life: 2000 });
         }
         else if(result.result === 'error'){
