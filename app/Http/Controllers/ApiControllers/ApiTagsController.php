@@ -9,6 +9,7 @@ use App\Models\TaskModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ApiTagsController extends Controller
 {
@@ -17,14 +18,14 @@ class ApiTagsController extends Controller
      */
     public function index(Request $request)
     {
-        $user = User::query()->where('id',$request->user()->id)->first();
+        $user = User::query()->where('id', $request->user()->id)->first();
 //        $tokens = $user->tokens();
 //
 //        dd($request->bearerToken());
 //        dd($user);
 //        dd($request->user()->id);
 //        dd($request->bearerToken());
-        return TagsResource::collection(TagsModel::query()->where('user_id',$user->id)->get());
+        return TagsResource::collection(TagsModel::query()->where('user_id', $user->id)->get());
     }
 
     /**
@@ -64,7 +65,19 @@ class ApiTagsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'value' => 'required|min:3|max:20',
+        ]);
+
+        if ($validator->fails()) {
+            return ['result' => 'error', 'message' => $validator->errors()];
+        }
+        TagsModel::query()->where('id', $id)
+            ->update([
+                'title' => $request->value
+            ]);
+
+        return ['result' => 'success'];
     }
 
     /**

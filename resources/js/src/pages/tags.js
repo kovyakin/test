@@ -6,9 +6,12 @@ import PrimeVue from 'primevue/config';
 
 import Aura from '@primevue/themes/aura';
 
+import ToastService from 'primevue/toastservice';
+
 const tags = createApp({});
 
 tags.component('tags-form', Tags);
+tags.use(ToastService)
 tags.use(PrimeVue, {
     theme: {
         preset: Aura,
@@ -18,6 +21,7 @@ tags.use(PrimeVue, {
             cssLayer: false
         }
     }
+
 });
 
 tags.mount('#tags');

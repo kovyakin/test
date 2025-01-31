@@ -1,36 +1,42 @@
 <template>
   <div class="grid grid-cols-4 gap-1 mt-2 ml-2">
     <div v-for="tag in tags"
+         :key=tag.id
          class="">
       <Card style="width: 20rem; overflow: hidden">
         <template #content>
 
-              <InputText v-model="title"
-                         class="!w-full"
-                         @value-change="edit_tags(tag)"
-                         :disabled="!tag.disabled" :value=" tag.title " type="text"
-                         size="small"  />
+          <InputText v-model="title"
+                     class="!w-full "
+                     :class="tag.validate"
+                     @value-change="edit_tags(tag)"
+                     :disabled="!tag.disabled"
+                     :value=" tag.title "
+                     type="text"
+                     size="small"/>
         </template>
 
         <template #footer>
           <div class="flex justify-stretch">
 
-                <div class="flex gap-4 mt-1 text-sm mr-4">
-                  created: {{ tag.created_at }}
-                </div>
-            <div class="mx-1 my-1"  v-if="tag.disabled">
-              <i class="pi pi-check" style="color: slateblue"
+            <div class="flex gap-4 mt-1 text-sm mr-4">
+              created: {{ tag.created_at }}
+            </div>
+            <div class="mx-1 my-1"
+                 v-if="tag.disabled && tag.validate == null">
+              <i class="pi pi-check"
+                 style="color: slateblue"
                  @click="send_tags(tag)"
               ></i>
             </div>
 
-            <div class="mx-1 my-1" >
+            <div class="mx-1 my-1">
               <i class="pi pi-pencil"
                  @click="edit(tag)"
                  style="color: orange; font-size: 1rem"></i>
             </div>
 
-            <div  class="mx-1 my-1">
+            <div class="mx-1 my-1">
               <i class="pi pi-times"
                  style="color: red;font-size: 1rem"></i>
             </div>
@@ -41,44 +47,72 @@
 
     </div>
   </div>
-
+  <Toast  />
 
 </template>
 
-<script setup>
+<script  setup>
 import {get} from "../../fetch";
 import {onMounted, ref} from "vue";
 import Card from 'primevue/card';
 import InputText from 'primevue/inputtext';
+import Toast from 'primevue/toast';
+import {useToast} from "primevue";
+// import {useToast} from 'primevue/usetoast';
 
+const toast = useToast();
 
 const props = defineProps({
   token: String
 })
 
 const tags = ref([]);
-const title = ref(null)
+const title = ref(null);
+
+
 onMounted(() => {
   load_tags();
+
 })
 
 const load_tags = () => {
   get('/api/tags', props.token, 'GET').then((response) => response.json()).then((result) => {
     tags.value = result.data;
-    // console.log(result);
+
   });
 }
 
-const edit = (t)=>{
+const edit = (t) => {
   t.disabled = true
 }
-const edit_tags = (t)=>{
+const edit_tags = (t) => {
+  const index = tags.value.findIndex((el) => el.id === t.id);
+  tags.value[index].title = title.value;
+  if (title.value.length > 3 && title.value.length < 21) {
+    // tags.value[index].title = title.value;
+    tags.value[index].validate = null;
+  } else {
+    tags.value[index].validate = '!text-red-500';
 
-  console.log(title)
+
+  }
+
 }
-const send_tags = (t)=>{
-t.disabled=false
-  console.log(title)
+const send_tags = (t) => {
+  t.disabled = false
+  if (t.validate == null) {
+
+    get('/api/tags/' + t.id, props.token, 'PUT', t.title).then((response) => response.json()).then((result) => {
+      if (result.result === 'success') {
+        toast.add({ severity: 'success', summary: 'Info', detail: 'Изменения сохранены', life: 2000 });
+      }
+      else{
+
+      }
+
+    });
+  }
+  // console.log(title)
 }
 </script>
 
