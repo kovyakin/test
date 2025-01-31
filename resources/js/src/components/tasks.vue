@@ -196,14 +196,16 @@ const load_tags = () => {
 }
 
 const edit = (t) => {
-  console.log(t.tags_id)
-  console.log(tasks.value)
+
+const id = ref([]);
+      t.tags_id.map((el)=>{
+        id.value.push(el.id);
+  });
+
   visible_dialog_add.value=true;
   new_task.value = t.title;
   text_value.value = t.text;
-  selectedItems.value = t.tags_id;
-  selectAll.value=false;
-  // t.disabled = true
+  selectedItems.value =  id.value;
 }
 const edit_tasks = (t) => {
   const index = tasks.value.findIndex((el) => el.id === t.id);
@@ -234,7 +236,6 @@ const send_tasks = (t) => {
   // console.log(title)
 }
 const send_new_task = () => {
-
   if (class_validate_new_task.value === '' &&
       new_task.value.length > 0 &&
       class_validate_new_text.value === '' &&
