@@ -196,7 +196,14 @@ const load_tags = () => {
 }
 
 const edit = (t) => {
-  t.disabled = true
+  console.log(t.tags_id)
+  console.log(tasks.value)
+  visible_dialog_add.value=true;
+  new_task.value = t.title;
+  text_value.value = t.text;
+  selectedItems.value = t.tags_id;
+  selectAll.value=false;
+  // t.disabled = true
 }
 const edit_tasks = (t) => {
   const index = tasks.value.findIndex((el) => el.id === t.id);
