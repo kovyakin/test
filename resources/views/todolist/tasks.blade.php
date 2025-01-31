@@ -3,7 +3,9 @@
 @section('content')
 
     <div id="tasks">
-        <tasks-form></tasks-form>
+        <tasks-form
+                token ="VSsczfZKw6GZDWPEh8lytbWAIKxFYBhTI2hsBNPC5cfed5d3"
+        ></tasks-form>
     </div>
 
 @endsection
