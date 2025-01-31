@@ -1,4 +1,12 @@
 <template>
+  <div class="container text-center">
+    <div class="row mt-2">
+      <Button label="Добавить" severity="secondary" variant="text" raised size="small"
+              @click="visible_dialog_add = true"
+      />
+    </div>
+
+  </div>
   <div class="grid grid-cols-4 gap-1 mt-2 ml-2">
     <div v-for="tag in tags"
          :key=tag.id
@@ -50,6 +58,28 @@
   </div>
   <Toast  />
   <ConfirmDialog></ConfirmDialog>
+
+  <Dialog v-model:visible="visible_dialog_add" modal header="Добавить новую запись" :style="{ width: '25rem' }">
+    <span class="text-surface-500 dark:text-surface-400 block mb-8">От 3 до 20 символов.</span>
+    <div class="flex items-center gap-4 mb-4">
+      <label for="todotag" class="font-semibold w-24">Tag</label>
+      <InputText id="todotag" v-model="new_tag"
+                 class="!w-full"
+                 :class = "class_validate_new_tag"
+                 @value-change="add_tags()"
+                 type="text"
+                 size="small" autocomplete="off"
+
+      />
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <Button type="button" label="Cancel" severity="secondary" @click="visible_dialog_add = false"></Button>
+      <Button type="button" label="Save" @click="visible_dialog_add = false"
+              :disabled = "!(class_validate_new_tag === '' &&  new_tag !== '') "
+      ></Button>
+    </div>
+  </Dialog>
 </template>
 
 <script  setup>
@@ -61,6 +91,8 @@ import Toast from 'primevue/toast';
 import {useToast} from "primevue";
 import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from "primevue/useconfirm";
+import {Button} from "primevue";
+import Dialog from 'primevue/dialog';
 
 const toast = useToast();
 const confirm = useConfirm();
@@ -71,6 +103,9 @@ const props = defineProps({
 
 const tags = ref([]);
 const title = ref(null);
+const visible_dialog_add = ref(false);
+const new_tag = ref('');
+const class_validate_new_tag = ref('');
 
 
 onMounted(() => {
@@ -96,11 +131,10 @@ const edit_tags = (t) => {
     tags.value[index].validate = null;
   } else {
     tags.value[index].validate = '!text-red-500';
-
-
   }
-
 }
+
+
 const send_tags = (t) => {
   t.disabled = false
   if (t.validate == null) {
@@ -117,6 +151,17 @@ const send_tags = (t) => {
   }
   // console.log(title)
 }
+
+const add_tags = () => {
+  if(new_tag.value.length >3 && new_tag.value.length<21){
+    class_validate_new_tag.value = '';
+  }
+  else{
+    class_validate_new_tag.value = '!text-red-500';
+  }
+console.log(new_tag.value)
+}
+
 
 const confirm_delete = (t) => {
   confirm.require({
