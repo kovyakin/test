@@ -64,7 +64,7 @@ class ApiTasksController extends Controller
             'user_id' => $user_id,
             'title'=>$title,
             'text'=>$text,
-            'tags_id'=>count($selectItem) > 0 ? $selectItem->toJson(): null,
+            'tags_id'=>count($selectItem) > 0 ? json_encode($selectItem): null,
         ]);
 
         return ['result' => 'success'];

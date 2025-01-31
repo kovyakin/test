@@ -16,18 +16,18 @@
          :key=task.id
          class="">
       <Card style="width: 20rem; overflow: hidden">
-        <template #content>
-
-          <InputText v-model="title"
-                     class="!w-full "
-                     :class="task.validate"
-                     @value-change="edit_tasks(task)"
-                     :disabled="!task.disabled"
-                     :value=" task.title "
-                     type="text"
-                     size="small"/>
-
+        <template #title  > <span class="flex justify-content-center text-uppercase">
+          {{task.title}}
+        </span></template>
+        <template #subtitle>
+          <Panel header="tags" toggleable collapsed size="small">
+                   <p v-for="tags in task.tags_id">
+            {{ tags.title }}
+          </p>
+          </Panel>
         </template>
+
+        <template #content>{{task.text}}</template>
 
         <template #footer>
           <div class="flex justify-stretch">
@@ -154,6 +154,8 @@ import Dialog from 'primevue/dialog';
 import {Textarea} from "primevue";
 import MultiSelect from 'primevue/multiselect';
 
+import Panel from 'primevue/panel';
+
 const toast = useToast();
 const confirm = useConfirm();
 
@@ -183,7 +185,6 @@ const load_tasks = () => {
 
   get('/api/tasks', props.token, 'GET').then((response) => response.json()).then((result) => {
     tasks.value = result.data;
-
   });
 }
 
@@ -216,6 +217,7 @@ const send_tasks = (t) => {
     get('/api/tasks/' + t.id, props.token, 'PUT', t.title).then((response) => response.json()).then((result) => {
       if (result.result === 'success') {
         toast.add({severity: 'success', summary: 'Успешно', detail: 'Изменения сохранены', life: 2000});
+
       } else if (result.result === 'error') {
         toast.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка сохранения', life: 2000});
       }
@@ -231,7 +233,7 @@ const send_new_task = () => {
       class_validate_new_text.value === '' &&
       text_value.value.length > 0
   ) {
-console.log(selectedItems.value)
+
     get('/api/tasks', props.token, 'POST',[ new_task.value, text_value.value, selectAll.value, selectedItems.value]).then((response) =>
         response.json()).then((result) => {
 
@@ -239,6 +241,7 @@ console.log(selectedItems.value)
         visible_dialog_add.value = false;
         new_task.value = '';
         load_tasks();
+        reset();
         toast.add({severity: 'success', summary: 'Успешно', detail: 'Запись создана', life: 2000});
       } else if (result.result === 'error') {
         toast.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка создания записи', life: 2000});
@@ -310,7 +313,8 @@ const reset = ()=>{
   visible_dialog_add.value = false;
   new_task.value = '';
   text_value.value = '';
-  selectedItems.value = null;
+  selectedItems.value = [];
+  selectAll.value=false;
 }
 
 </script>
