@@ -12,7 +12,7 @@ class TagsModelController extends Controller
      */
     public function index()
     {
-        //
+        return view('todolist.tags')->with(['active_tags'=> true]);
     }
 
     /**

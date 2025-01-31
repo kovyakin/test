@@ -1,18 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace app\Http\Controllers\ApiControllers;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\TagsResource;
 use App\Models\TaskModel;
 use Illuminate\Http\Request;
 
-class TaskModelController extends Controller
+class ApiTagsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('todolist.tasks')->with(['active_tasks'=> true]);
+
+        return TagsResource::collection(TaskModel::class);
     }
 
     /**
@@ -34,7 +37,7 @@ class TaskModelController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(TaskModel $taskModel)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +45,7 @@ class TaskModelController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(TaskModel $taskModel)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +53,7 @@ class TaskModelController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, TaskModel $taskModel)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +61,7 @@ class TaskModelController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TaskModel $taskModel)
+    public function destroy(string $id)
     {
         //
     }
