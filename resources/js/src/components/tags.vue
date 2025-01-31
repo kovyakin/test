@@ -104,10 +104,10 @@ const send_tags = (t) => {
 
     get('/api/tags/' + t.id, props.token, 'PUT', t.title).then((response) => response.json()).then((result) => {
       if (result.result === 'success') {
-        toast.add({ severity: 'success', summary: 'Info', detail: 'Изменения сохранены', life: 2000 });
+        toast.add({ severity: 'success', summary: 'Успешно', detail: 'Изменения сохранены', life: 2000 });
       }
-      else{
-
+      else if(result.result === 'error'){
+        toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Ошибка сохранения', life: 2000 });
       }
 
     });
