@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\TaskModel;
 use Illuminate\Http\Request;
+use Laravel\Sanctum\HasApiTokens;
 
 class TaskModelController extends Controller
 {
+    use HasApiTokens;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+
         return view('todolist.tasks')->with(['active_tasks'=> true]);
     }
 

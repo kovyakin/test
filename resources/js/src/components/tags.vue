@@ -111,13 +111,11 @@ const class_validate_new_tag = ref('');
 
 onMounted(() => {
   load_tags();
-
 })
 
 const load_tags = () => {
   get('/api/tags', props.token, 'GET').then((response) => response.json()).then((result) => {
     tags.value = result.data;
-
   });
 }
 
