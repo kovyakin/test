@@ -209,7 +209,6 @@ const confirm_delete = (t) => {
 
       });
 
-      // toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 2000 });
     },
     reject: () => {
       toast.add({ severity: 'error', summary: 'Отмена', detail: 'Удаление отменено', life: 2000 });

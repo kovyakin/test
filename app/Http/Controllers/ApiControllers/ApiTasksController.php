@@ -91,17 +91,36 @@ class ApiTasksController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $user_id = auth()->user()->id;
+
         $validator = Validator::make($request->all(), [
-            'value' => 'required|min:3|max:20',
+            'value'=>'required|array',
+            'value.0' => 'required|min:3|max:20',
+            'value.1' => 'required|min:3|max:200',
+            'value.3' => 'array',
         ]);
+
+        $title = $request->value[0];
+        $text = $request->value[1];
+        $selectAll = $request->value[2];
+        $selectItem = $request->value[3];
+
+        if($selectAll){
+            $selectItem = TagsModel::query()
+                ->where('user_id', $user_id)
+                ->pluck('id');
+        }
 
         if ($validator->fails()) {
             return ['result' => 'error', 'message' => $validator->errors()];
         }
-        TaskModel::query()->where('id', $id)
-            ->update([
-                'title' => $request->value
-            ]);
+
+
+        TaskModel::query()->where('id',$id) ->update([
+            'title'=>$title,
+            'text'=>$text,
+            'tags_id'=>count($selectItem) > 0 ? json_encode($selectItem): null,
+        ]);
 
         return ['result' => 'success'];
     }

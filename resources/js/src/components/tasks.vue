@@ -35,13 +35,6 @@
             <div class="flex gap-4 mt-1 text-sm mr-4">
               created: {{ task.created_at }}
             </div>
-            <div class="mx-1 my-1"
-                 v-if="task.disabled && task.validate == null">
-              <i class="pi pi-check"
-                 style="color: slateblue"
-                 @click="send_tasks(task)"
-              ></i>
-            </div>
 
             <div class="mx-1 my-1">
               <i class="pi pi-pencil"
@@ -83,7 +76,6 @@
                      placeholder="От 3 до 20 символов."
                      size="small"
                      autocomplete="off"
-
           />
         </div>
         <div>
@@ -129,7 +121,7 @@
       <Button type="button"
               label="Отмена"
               severity="secondary"
-              @click="reset "></Button>
+              @click="reset"></Button>
       <Button type="button"
               label="Сохранить"
               @click="send_new_task"
@@ -164,7 +156,6 @@ const props = defineProps({
 })
 
 const tasks = ref([]);
-const title = ref(null);
 const text_value = ref(null);
 const visible_dialog_add = ref(false);
 const new_task = ref('');
@@ -175,6 +166,8 @@ const class_validate_new_text = ref('');
 const selectedItems = ref([]);
 const selectAll = ref(false);
 const items = ref([]);
+const is_edit = ref(false);
+const id_edit_task = ref();
 
 onMounted(() => {
   load_tasks();
@@ -202,52 +195,34 @@ const id = ref([]);
         id.value.push(el.id);
   });
 
+  is_edit.value = true;
+  id_edit_task.value = t.id;
   visible_dialog_add.value=true;
   new_task.value = t.title;
   text_value.value = t.text;
   selectedItems.value =  id.value;
 }
-const edit_tasks = (t) => {
-  const index = tasks.value.findIndex((el) => el.id === t.id);
-  tasks.value[index].title = title.value;
-  if (title.value.length > 3 && title.value.length < 21) {
-    // tasks.value[index].title = title.value;
-    tasks.value[index].validate = null;
-  } else {
-    tasks.value[index].validate = '!text-red-500';
-  }
-}
 
-
-const send_tasks = (t) => {
-  t.disabled = false
-  if (t.validate == null) {
-
-    get('/api/tasks/' + t.id, props.token, 'PUT', t.title).then((response) => response.json()).then((result) => {
-      if (result.result === 'success') {
-        toast.add({severity: 'success', summary: 'Успешно', detail: 'Изменения сохранены', life: 2000});
-
-      } else if (result.result === 'error') {
-        toast.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка сохранения', life: 2000});
-      }
-
-    });
-  }
-  // console.log(title)
-}
 const send_new_task = () => {
+
   if (class_validate_new_task.value === '' &&
       new_task.value.length > 0 &&
       class_validate_new_text.value === '' &&
       text_value.value.length > 0
   ) {
 
-    get('/api/tasks', props.token, 'POST',[ new_task.value, text_value.value, selectAll.value, selectedItems.value]).then((response) =>
+    let method = 'POST';
+    let url = '/api/tasks';
+    if(is_edit.value){
+      method = 'PUT';
+      url = url +'/'+ id_edit_task.value;
+    }
+
+    get(url, props.token, method,[ new_task.value, text_value.value, selectAll.value, selectedItems.value]).then((response) =>
         response.json()).then((result) => {
 
       if (result.result === 'success') {
         visible_dialog_add.value = false;
-        new_task.value = '';
         load_tasks();
         reset();
         toast.add({severity: 'success', summary: 'Успешно', detail: 'Запись создана', life: 2000});
@@ -323,6 +298,7 @@ const reset = ()=>{
   text_value.value = '';
   selectedItems.value = [];
   selectAll.value=false;
+  is_edit.value = false;
 }
 
 </script>
