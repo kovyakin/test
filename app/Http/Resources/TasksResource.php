@@ -34,6 +34,3 @@ class TasksResource extends JsonResource
         ];
     }
 }
-//d2Z3KZrqyz2XgxfYRsyC7stABYi0UPGuI6BFXqkOa0751958 read
-
-//CJi7Ud5QxO7WgexDgTk4AevnyHfnInzonWPDa5fza30bbef4 update
