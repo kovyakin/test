@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Validator;
 
 class ApiTasksController extends Controller
 {
+    public function __construct()
+    {
+
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -23,14 +28,6 @@ class ApiTasksController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -38,7 +35,7 @@ class ApiTasksController extends Controller
         $user_id = auth()->user()->id;
 
         $validator = Validator::make($request->all(), [
-            'value'=>'required|array',
+            'value' => 'required|array',
             'value.0' => 'required|min:3|max:20',
             'value.1' => 'required|min:3|max:200',
             'value.3' => 'array',
@@ -49,7 +46,7 @@ class ApiTasksController extends Controller
         $selectAll = $request->value[2];
         $selectItem = $request->value[3];
 
-        if($selectAll){
+        if ($selectAll) {
             $selectItem = TagsModel::query()
                 ->where('user_id', $user_id)
                 ->pluck('id');
@@ -62,9 +59,9 @@ class ApiTasksController extends Controller
 
         TaskModel::query()->create([
             'user_id' => $user_id,
-            'title'=>$title,
-            'text'=>$text,
-            'tags_id'=>count($selectItem) > 0 ? json_encode($selectItem): null,
+            'title' => $title,
+            'text' => $text,
+            'tags_id' => count($selectItem) > 0 ? json_encode($selectItem) : null,
         ]);
 
         return ['result' => 'success'];
@@ -79,14 +76,6 @@ class ApiTasksController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
@@ -94,7 +83,7 @@ class ApiTasksController extends Controller
         $user_id = auth()->user()->id;
 
         $validator = Validator::make($request->all(), [
-            'value'=>'required|array',
+            'value' => 'required|array',
             'value.0' => 'required|min:3|max:20',
             'value.1' => 'required|min:3|max:200',
             'value.3' => 'array',
@@ -105,7 +94,7 @@ class ApiTasksController extends Controller
         $selectAll = $request->value[2];
         $selectItem = $request->value[3];
 
-        if($selectAll){
+        if ($selectAll) {
             $selectItem = TagsModel::query()
                 ->where('user_id', $user_id)
                 ->pluck('id');
@@ -116,10 +105,10 @@ class ApiTasksController extends Controller
         }
 
 
-        TaskModel::query()->where('id',$id) ->update([
-            'title'=>$title,
-            'text'=>$text,
-            'tags_id'=>count($selectItem) > 0 ? json_encode($selectItem): null,
+        TaskModel::query()->where('id', $id)->update([
+            'title' => $title,
+            'text' => $text,
+            'tags_id' => count($selectItem) > 0 ? json_encode($selectItem) : null,
         ]);
 
         return ['result' => 'success'];
@@ -130,11 +119,11 @@ class ApiTasksController extends Controller
      */
     public function destroy(string $id)
     {
-        $isDel =  TaskModel::query()->where('id', $id)->delete();
+        $isDel = TaskModel::query()->where('id', $id)->delete();
 
 //        $isDel = TagsModel::query()->find($id)->first();
 
-        if($isDel){
+        if ($isDel) {
             return ['result' => 'success'];
         }
 

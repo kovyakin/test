@@ -24,11 +24,6 @@ class TasksResource extends JsonResource
             }
 
         });
-//        foreach ($tags_id as $el) {
-//            $tag = TagsModel::query()-> find($el)->first();
-//            $tags->push(['id'=>$tag->id,'title'=>$tag->title]);
-//
-//        }
 
         return [
             'id'=>$this->id,
@@ -39,3 +34,6 @@ class TasksResource extends JsonResource
         ];
     }
 }
+//d2Z3KZrqyz2XgxfYRsyC7stABYi0UPGuI6BFXqkOa0751958 read
+
+//CJi7Ud5QxO7WgexDgTk4AevnyHfnInzonWPDa5fza30bbef4 update
