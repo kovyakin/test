@@ -13,6 +13,8 @@ export default defineConfig({
 
                 'resources/css/app.css',
                 'resources/js/app.js',
+                'resources/js/src/pages/tasks.js',
+                'resources/js/src/pages/tags.js',
                 'resources/sass/app.scss',
             ],
             refresh: true,
