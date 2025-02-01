@@ -33,7 +33,7 @@
           <div class="flex justify-stretch">
 
             <div class="flex gap-4 mt-1 text-sm mr-4">
-              created: {{ task.created_at }}
+              Создано: {{ task.created_at }}
             </div>
 
             <div class="mx-1 my-1">

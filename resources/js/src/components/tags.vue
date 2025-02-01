@@ -28,7 +28,7 @@
           <div class="flex justify-stretch">
 
             <div class="flex gap-4 mt-1 text-sm mr-4">
-              created: {{ tag.created_at }}
+              Создано: {{ tag.created_at }}
             </div>
             <div class="mx-1 my-1"
                  v-if="tag.disabled && tag.validate == null">
