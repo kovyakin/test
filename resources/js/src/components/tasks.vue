@@ -152,7 +152,8 @@ const toast = useToast();
 const confirm = useConfirm();
 
 const props = defineProps({
-  token: String
+  token: String,
+  csrf:String
 })
 
 const tasks = ref([]);
@@ -218,7 +219,8 @@ const send_new_task = () => {
       url = url +'/'+ id_edit_task.value;
     }
 
-    get(url, props.token, method,[ new_task.value, text_value.value, selectAll.value, selectedItems.value]).then((response) =>
+    get(url, props.token, method,[ new_task.value, text_value.value, selectAll.value, selectedItems.value],props.csrf)
+        .then((response) =>
         response.json()).then((result) => {
 
       if (result.result === 'success') {
@@ -269,7 +271,7 @@ const confirm_delete = (t) => {
     },
     accept: () => {
 
-      get('/api/tasks/' + t.id, props.token, 'DELETE', t.title).then((response) => response.json()).then((result) => {
+      get('/api/tasks/' + t.id, props.token, 'DELETE', t.title,props.csrf).then((response) => response.json()).then((result) => {
         if (result.result === 'success') {
           load_tasks();
           toast.add({severity: 'success', summary: 'Успешно', detail: 'Удалено', life: 2000});

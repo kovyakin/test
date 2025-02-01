@@ -3,8 +3,8 @@
 @section('content')
     <div id="tags">
         <tags-form
-                scrf="{{ csrf_token() }}"
-        />
+                csrf="{{ csrf_token() }}"
+        ></tags-form>
     </div>
 
 @endsection

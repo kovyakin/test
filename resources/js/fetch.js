@@ -12,9 +12,9 @@
 
 import alert from "bootstrap/js/src/alert.js";
 
-export async function get(url, token, method, value = null, scrf = null) {
+export async function get(url, token, method, value = null, csrf = null) {
 
-    let scrf_ = document.getElementsByTagName('meta')[0].content;
+    // let scrf_ = document.getElementsByTagName('meta')[0].content;
 
     if (method === 'GET' || method === 'get') {
 
@@ -23,7 +23,7 @@ export async function get(url, token, method, value = null, scrf = null) {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
-                "x-csrf-token": `${scrf}`
+                "x-csrf-token": `${csrf}`
             }
         })
 
@@ -33,7 +33,7 @@ export async function get(url, token, method, value = null, scrf = null) {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
-                "x-csrf-token": `${scrf_}`
+                "x-csrf-token": `${csrf}`
             },
             body: JSON.stringify({value: value, token: token})
         })
