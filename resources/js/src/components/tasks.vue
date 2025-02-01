@@ -125,7 +125,8 @@
       <Button type="button"
               label="Сохранить"
               @click="send_new_task"
-              :disabled="!(class_validate_new_task === '' &&  new_task !== '') "
+              :disabled="!(class_validate_new_task === '' &&  new_task !== '' &&  class_validate_new_text === ''
+              && text_value !== '') "
       ></Button>
     </div>
   </Dialog>
@@ -207,9 +208,7 @@ const id = ref([]);
 const send_new_task = () => {
 
   if (class_validate_new_task.value === '' &&
-      new_task.value.length > 0 &&
-      class_validate_new_text.value === '' &&
-      text_value.value.length > 0
+      class_validate_new_text.value === ''
   ) {
 
     let method = 'POST';

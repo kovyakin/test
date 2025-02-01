@@ -153,7 +153,7 @@ const send_tags = (t) => {
 }
 const send_new_tag = () => {
 
-  if (class_validate_new_tag.value === '' && new_tag.value.length > 0) {
+  if (class_validate_new_tag.value === '' ) {
 
     get('/api/tags', props.token, 'POST', new_tag.value, props.csrf).then((response) => response.json()).then((result) => {
 
