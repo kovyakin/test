@@ -3,7 +3,9 @@
 @section('content')
 
     <div id="tasks">
-        <tasks-form></tasks-form>
+        <tasks-form
+                csrf="{{ csrf_token() }}"
+        ></tasks-form>
     </div>
 
 @endsection

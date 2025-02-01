@@ -6,19 +6,23 @@ import PrimeVue from 'primevue/config';
 
 import Aura from '@primevue/themes/aura';
 
+import ToastService from 'primevue/toastservice';
+
+import ConfirmationService from 'primevue/confirmationservice';
+
 const tasks = createApp({});
 
 tasks.component('tasks-form', Tasks);
+tasks.use(ToastService);
+tasks.use(ConfirmationService);
+
 tasks.use(PrimeVue, {
     theme: {
         preset: Aura,
         options: {
             prefix: 'p',
             darkModeSelector: '.my-app-dark',
-            cssLayer: {
-                name: 'primevue',
-                order: 'tailwind-base, primevue, tailwind-utilities'
-            }
+            cssLayer: false
         }
     }
 });

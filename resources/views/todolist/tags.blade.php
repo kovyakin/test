@@ -3,10 +3,8 @@
 @section('content')
     <div id="tags">
         <tags-form
-           token ="VSsczfZKw6GZDWPEh8lytbWAIKxFYBhTI2hsBNPC5cfed5d3"
-        >
-
-        </tags-form>
+                csrf="{{ csrf_token() }}"
+        ></tags-form>
     </div>
 
 @endsection
