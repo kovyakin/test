@@ -59,7 +59,7 @@
 
   <Dialog v-model:visible="visible_dialog_add"
           modal
-          header="Добавить новую запись"
+          :header="is_edit ? 'Редактировать запись' : 'Добавить новую запись'"
           :style="{ width: '25rem' }">
     <div class="flex items-center">
       <div class="gridgrid-rows-3">
@@ -224,11 +224,14 @@ const send_new_task = () => {
       if (result.result === 'success') {
         visible_dialog_add.value = false;
         load_tasks();
-        reset();
-        toast.add({severity: 'success', summary: 'Успешно', detail: 'Запись создана', life: 2000});
+        toast.add({severity: 'success', summary: 'Успешно', detail: is_edit.value ? 'Запись отредактирована' :
+              'Запись создана', life: 2000});
+
       } else if (result.result === 'error') {
-        toast.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка создания записи', life: 2000});
+        toast.add({severity: 'error', summary: 'Ошибка', detail: is_edit.value?'Ошибка редактирования записи' :
+              'Ошибка создания записи', life: 2000});
       }
+      reset();
     });
   }
 }
