@@ -10,7 +10,11 @@
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import alert from "bootstrap/js/src/alert.js";
+
 export async function get(url, token, method, value = null, scrf = null) {
+
+    let scrf_ = document.getElementsByTagName('meta')[0].content;
 
     if (method === 'GET' || method === 'get') {
 
@@ -29,7 +33,7 @@ export async function get(url, token, method, value = null, scrf = null) {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
-                "x-csrf-token": `${scrf}`
+                "x-csrf-token": `${scrf_}`
             },
             body: JSON.stringify({value: value, token: token})
         })

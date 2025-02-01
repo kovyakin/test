@@ -19,7 +19,10 @@ class TasksResource extends JsonResource
         $tags_id =collect(json_decode($this->tags_id)) ;
         $tags_id->each(function ($id) use ($tags) {
             $tag = TagsModel::query()-> where('id',$id)->first();
-            $tags->push(['id'=>$tag->id,'title'=>$tag->title]);
+            if(isset($tag->id)){
+                $tags->push(['id'=>$tag->id,'title'=>$tag->title]);
+            }
+
         });
 //        foreach ($tags_id as $el) {
 //            $tag = TagsModel::query()-> find($el)->first();

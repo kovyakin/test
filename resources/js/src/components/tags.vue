@@ -83,7 +83,7 @@
   </Dialog>
 </template>
 
-<script  setup>
+<script  setup   inherit-attrs="false">
 import {get} from "../../fetch";
 import {onMounted, ref} from "vue";
 import Card from 'primevue/card';
@@ -99,7 +99,8 @@ const toast = useToast();
 const confirm = useConfirm();
 
 const props = defineProps({
-  token: String
+  token: String,
+  csrf:String
 })
 
 const tags = ref([]);
@@ -138,7 +139,7 @@ const send_tags = (t) => {
   t.disabled = false
   if (t.validate == null) {
 
-    get('/api/tags/' + t.id, props.token, 'PUT', t.title).then((response) => response.json()).then((result) => {
+    get('/api/tags/' + t.id, props.token, 'PUT', t.title, props.csrf ).then((response) => response.json()).then((result) => {
       if (result.result === 'success') {
         toast.add({ severity: 'success', summary: 'Успешно', detail: 'Изменения сохранены', life: 2000 });
       }
@@ -154,7 +155,7 @@ const send_new_tag = () => {
 
   if (class_validate_new_tag.value === '' && new_tag.value.length > 0) {
 
-    get('/api/tags', props.token, 'POST', new_tag.value).then((response) => response.json()).then((result) => {
+    get('/api/tags', props.token, 'POST', new_tag.value, props.csrf).then((response) => response.json()).then((result) => {
 
       if (result.result === 'success') {
         visible_dialog_add.value = false;
@@ -196,7 +197,7 @@ const confirm_delete = (t) => {
     },
     accept: () => {
 
-      get('/api/tags/' + t.id, props.token, 'DELETE', t.title).then((response) => response.json()).then((result) => {
+      get('/api/tags/' + t.id, props.token, 'DELETE', t.title, props.csrf).then((response) => response.json()).then((result) => {
         if (result.result === 'success') {
           load_tags();
           toast.add({ severity: 'success', summary: 'Успешно', detail: 'Удалено', life: 2000 });

@@ -2,7 +2,9 @@
 
 @section('content')
     <div id="tags">
-        <tags-form/>
+        <tags-form
+                scrf="{{ csrf_token() }}"
+        />
     </div>
 
 @endsection
